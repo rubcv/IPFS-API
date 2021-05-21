@@ -1,8 +1,10 @@
-var express = require('express')
-var multer = require('multer')
-var upload = multer({ dest: 'uploads/' })
-var uploadIPFS = require('./upload-ipfs')
-var app = express()
+const express = require('express')
+const multer = require('multer')
+const upload = multer({ dest: 'uploads/' })
+const uploadIPFS = require('./upload-ipfs')
+const app = express()
+const PATH = 'uploads/';
+const PORT = 8888;
 
 
 // GET index
@@ -11,8 +13,6 @@ app.get('/', async (req, res) => {
     res.sendFile(__dirname + '/index.html');
 
 });
-
-const PATH = 'uploads/';
 
 app.post('/file', upload.single('doc'), async function (req, res, next) {
     try {
@@ -26,10 +26,9 @@ app.post('/file', upload.single('doc'), async function (req, res, next) {
                 data: 'No file is selected.'
             });
         } else {
+            
             // send response
-
             var HASH = await uploadIPFS(PATH + req.file.filename);
-
             console.log(HASH);
 
             res.send({
@@ -48,10 +47,7 @@ app.post('/file', upload.single('doc'), async function (req, res, next) {
     }
 })
 
-
 // start the app 
-const port = 8888;
-
-app.listen(port, () =>
-    console.log(`Server is listening on port ${port}.`)
+app.listen(PORT, () =>
+    console.log(`Server is listening on port: ${PORT}.`)
 );
